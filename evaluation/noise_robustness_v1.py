@@ -80,9 +80,12 @@ def add_noise_uint16(e2, sigma, rng):
 
 
 def _svd_one(mat):
-    """Compute top-1 singular vectors for a single (181, 361) matrix."""
+    """Compute top-1 scaled singular vectors for a single (181, 361) matrix.
+    Returns Us = U[:, 0] * s[0] (scaled left singular vector) and Vt[0, :] (right singular vector).
+    This matches the trainer's HDF5 'Us' field which stores U × Σ.
+    """
     U, s, Vt = np.linalg.svd(mat, full_matrices=False)
-    return U[:, 0], Vt[0, :]
+    return U[:, 0] * s[0], Vt[0, :]
 
 
 def compute_svd_features(e2_noisy, n_workers=16):
